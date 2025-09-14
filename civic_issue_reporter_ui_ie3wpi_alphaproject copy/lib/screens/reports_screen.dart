@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/report.dart';
-import '../utils/mock_data.dart';
 import '../widgets/report_item_widget.dart';
 import '../widgets/bottom_nav_widget.dart';
 import '../widgets/report_form_widget.dart';
 import '../styles/app_theme.dart';
+import '../providers/reports_provider.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -25,8 +26,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
     super.dispose();
   }
 
-  List<Report> get _filteredReports {
-    return MockData.mockReports.where((report) {
+  List<Report> _getFilteredReports(List<Report> reports) {
+    return reports.where((report) {
       final matchesStatus =
           _selectedStatus == 'all' || report.status.name == _selectedStatus;
       final matchesSearch =
@@ -36,16 +37,16 @@ class _ReportsScreenState extends State<ReportsScreen> {
     }).toList();
   }
 
-  Map<String, int> get _statusCounts {
+  Map<String, int> _getStatusCounts(List<Report> reports) {
     return {
-      'all': MockData.mockReports.length,
-      'sent': MockData.mockReports
+      'all': reports.length,
+      'sent': reports
           .where((r) => r.status == ReportStatus.sent)
           .length,
-      'received': MockData.mockReports
+      'received': reports
           .where((r) => r.status == ReportStatus.received)
           .length,
-      'resolved': MockData.mockReports
+      'resolved': reports
           .where((r) => r.status == ReportStatus.resolved)
           .length,
     };
@@ -112,8 +113,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.neutral200,
-      body: Column(
-        children: [
+      body: Consumer<ReportsProvider>(
+        builder: (context, reportsProvider, child) {
+          final reports = reportsProvider.reports;
+          final filteredReports = _getFilteredReports(reports);
+          final statusCounts = _getStatusCounts(reports);
+          
+          return Column(
+            children: [
           // Header with search and filters
           Container(
             decoration: const BoxDecoration(
@@ -196,10 +203,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       height: 40,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: _statusCounts.length,
+                        itemCount: statusCounts.length,
                         itemBuilder: (context, index) {
-                          final status = _statusCounts.keys.elementAt(index);
-                          final count = _statusCounts[status]!;
+                          final status = statusCounts.keys.elementAt(index);
+                          final count = statusCounts[status]!;
                           final isSelected = _selectedStatus == status;
 
                           return Padding(
@@ -243,41 +250,43 @@ class _ReportsScreenState extends State<ReportsScreen> {
             ),
           ),
 
-          // Reports List
-          Expanded(
-            child: _filteredReports.isEmpty
-                ? const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.filter_list,
-                          size: 40,
-                          color: AppTheme.neutral400,
+              // Reports List
+              Expanded(
+                child: filteredReports.isEmpty
+                    ? const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.filter_list,
+                              size: 40,
+                              color: AppTheme.neutral400,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'No reports found matching your criteria.',
+                              style: TextStyle(
+                                color: AppTheme.neutral600,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 16),
-                        Text(
-                          'No reports found matching your criteria.',
-                          style: TextStyle(
-                            color: AppTheme.neutral600,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _filteredReports.length,
-                    itemBuilder: (context, index) {
-                      return ReportItemWidget(
-                        report: _filteredReports[index],
-                        detailed: true,
-                      );
-                    },
-                  ),
-          ),
-        ],
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: filteredReports.length,
+                        itemBuilder: (context, index) {
+                          return ReportItemWidget(
+                            report: filteredReports[index],
+                            detailed: true,
+                          );
+                        },
+                      ),
+              ),
+            ],
+          );
+        },
       ),
       bottomNavigationBar: BottomNavWidget(
         currentIndex: _currentIndex,
