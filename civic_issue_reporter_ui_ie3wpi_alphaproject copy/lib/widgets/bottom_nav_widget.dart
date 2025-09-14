@@ -15,7 +15,11 @@ class BottomNavWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: AppTheme.neutral100,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFFFAFAFA), AppTheme.neutral100],
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
@@ -45,17 +49,10 @@ class BottomNavWidget extends StatelessWidget {
                 index: 1,
               ),
               _buildNavItem(
-                icon: Icons.add_circle_outline,
-                activeIcon: Icons.add_circle,
-                label: 'Add',
-                index: 2,
-                isCentral: true,
-              ),
-              _buildNavItem(
                 icon: Icons.person_outline,
                 activeIcon: Icons.person,
                 label: 'Profile',
-                index: 3,
+                index: 2,
               ),
             ],
           ),
@@ -69,59 +66,16 @@ class BottomNavWidget extends StatelessWidget {
     required IconData activeIcon,
     required String label,
     required int index,
-    bool isCentral = false,
   }) {
     final isActive = currentIndex == index;
     final color = isActive ? AppTheme.primaryColor : AppTheme.neutral500;
-
-    if (isCentral) {
-      return GestureDetector(
-        onTap: () => onTap(index),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Transform.translate(
-              offset: const Offset(0, -24),
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  color: AppTheme.accentColor,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  isActive ? activeIcon : icon,
-                  color: AppTheme.neutral100,
-                  size: 24,
-                ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
 
     return GestureDetector(
       onTap: () => onTap(index),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(isActive ? activeIcon : icon, color: color, size: 20),
+          Icon(isActive ? activeIcon : icon, color: color, size: 22),
           const SizedBox(height: 4),
           Text(
             label,

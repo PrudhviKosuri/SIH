@@ -6,7 +6,7 @@ import '../styles/app_theme.dart';
 
 class VideoUploadWidget extends StatefulWidget {
   final Function(File videoFile) onVideoSelected;
-  
+
   const VideoUploadWidget({
     super.key,
     required this.onVideoSelected,
@@ -16,7 +16,7 @@ class VideoUploadWidget extends StatefulWidget {
   State<VideoUploadWidget> createState() => _VideoUploadWidgetState();
 }
 
-class _VideoUploadWidgetState extends State<VideoUploadWidget> 
+class _VideoUploadWidgetState extends State<VideoUploadWidget>
     with SingleTickerProviderStateMixin {
   File? _selectedVideo;
   VideoPlayerController? _videoController;
@@ -55,30 +55,30 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
         type: FileType.video,
         allowMultiple: false,
       );
-      
+
       if (result != null && result.files.single.path != null) {
         final videoFile = File(result.files.single.path!);
         final fileSize = await videoFile.length();
-        
+
         // Check file size (limit to 100MB)
         if (fileSize > 100 * 1024 * 1024) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Video file is too large. Please select a file under 100MB.'),
+                content: Text(
+                    'Video file is too large. Please select a file under 100MB.'),
                 backgroundColor: AppTheme.warningColor,
               ),
             );
           }
           return;
         }
-        
+
         setState(() {
           _selectedVideo = videoFile;
         });
-        
+
         await _initializeVideoPlayer(videoFile);
-        
       }
     } catch (e) {
       if (mounted) {
@@ -103,7 +103,7 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
       _videoController?.dispose();
       _videoController = VideoPlayerController.file(videoFile);
       await _videoController!.initialize();
-      
+
       if (mounted) {
         setState(() {});
       }
@@ -114,7 +114,7 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
 
   void _togglePlayPause() {
     if (_videoController == null) return;
-    
+
     setState(() {
       if (_isPlaying) {
         _videoController!.pause();
@@ -128,23 +128,23 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
 
   Future<void> _uploadVideo() async {
     if (_selectedVideo == null) return;
-    
+
     setState(() {
       _uploadProgress = 0.0;
     });
-    
+
     // Simulate upload progress
     _progressController.addListener(() {
       setState(() {
         _uploadProgress = _progressAnimation.value;
       });
     });
-    
+
     _progressController.forward().then((_) {
       if (mounted) {
         Navigator.pop(context);
         widget.onVideoSelected(_selectedVideo!);
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Video uploaded successfully!'),
@@ -205,7 +205,7 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                 ),
               ),
             ),
-            
+
             // Play/pause overlay
             Positioned.fill(
               child: Container(
@@ -231,7 +231,9 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        _isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                        _isPlaying
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
                         color: Colors.white,
                         size: 30,
                       ),
@@ -240,7 +242,7 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                 ),
               ),
             ),
-            
+
             // Remove button
             Positioned(
               top: 8,
@@ -262,7 +264,7 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                 ),
               ),
             ),
-            
+
             // Video duration
             Positioned(
               bottom: 8,
@@ -316,7 +318,7 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
             if (_isLoading)
               Column(
                 children: [
-                  CircularProgressIndicator(
+                  const CircularProgressIndicator(
                     color: AppTheme.secondaryColor,
                     strokeWidth: 3,
                   ),
@@ -324,9 +326,9 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                   Text(
                     'Loading video...',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.neutral600,
-                      fontWeight: FontWeight.w600,
-                    ),
+                          color: AppTheme.neutral600,
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                 ],
               )
@@ -339,7 +341,7 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                       color: AppTheme.secondaryColor.withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.videocam_rounded,
                       color: AppTheme.secondaryColor,
                       size: 40,
@@ -349,16 +351,16 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                   Text(
                     'Select Video',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: AppTheme.secondaryColor,
-                      fontWeight: FontWeight.w600,
-                    ),
+                          color: AppTheme.secondaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'MP4, MOV up to 100MB',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.neutral500,
-                    ),
+                          color: AppTheme.neutral500,
+                        ),
                   ),
                 ],
               ),
@@ -375,16 +377,17 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
         LinearProgressIndicator(
           value: _uploadProgress,
           backgroundColor: AppTheme.neutral300,
-          valueColor: AlwaysStoppedAnimation<Color>(AppTheme.successColor),
+          valueColor:
+              const AlwaysStoppedAnimation<Color>(AppTheme.successColor),
           minHeight: 6,
         ),
         const SizedBox(height: 8),
         Text(
           'Uploading... ${(_uploadProgress * 100).toInt()}%',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: AppTheme.neutral600,
-            fontWeight: FontWeight.w600,
-          ),
+                color: AppTheme.neutral600,
+                fontWeight: FontWeight.w600,
+              ),
         ),
       ],
     );
@@ -406,9 +409,9 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppTheme.neutral100,
-        borderRadius: const BorderRadius.only(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
@@ -433,26 +436,29 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                   Expanded(
                     child: Text(
                       'Upload Video',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.neutral800,
-                      ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.neutral800,
+                              ),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   const SizedBox(width: 48), // Balance the close button
                 ],
               ),
-              
+
               const SizedBox(height: 20),
-              
+
               // Video preview or upload area
-              _selectedVideo != null ? _buildVideoPreview() : _buildUploadArea(),
-              
+              _selectedVideo != null
+                  ? _buildVideoPreview()
+                  : _buildUploadArea(),
+
               // Upload progress
               if (_uploadProgress > 0 && _uploadProgress < 1)
                 _buildUploadProgress(),
-              
+
               // Video info
               if (_selectedVideo != null && _uploadProgress == 0) ...[
                 const SizedBox(height: 16),
@@ -471,7 +477,7 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                         ),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.info_outline_rounded,
                               color: AppTheme.secondaryColor,
                               size: 20,
@@ -483,16 +489,22 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                                 children: [
                                   Text(
                                     'Video ready for upload',
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: AppTheme.secondaryColor,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          color: AppTheme.secondaryColor,
+                                        ),
                                   ),
                                   Text(
                                     'Size: ${_formatFileSize(snapshot.data!)}',
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: AppTheme.neutral600,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: AppTheme.neutral600,
+                                        ),
                                   ),
                                 ],
                               ),
@@ -505,7 +517,7 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                   },
                 ),
               ],
-              
+
               // Action buttons
               if (_selectedVideo != null && _uploadProgress == 0) ...[
                 const SizedBox(height: 20),
@@ -535,7 +547,7 @@ class _VideoUploadWidgetState extends State<VideoUploadWidget>
                   ],
                 ),
               ],
-              
+
               const SizedBox(height: 20),
             ],
           ),

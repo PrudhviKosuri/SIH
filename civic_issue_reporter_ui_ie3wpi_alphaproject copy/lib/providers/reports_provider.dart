@@ -67,6 +67,7 @@ class ReportsProvider extends ChangeNotifier {
     required String description,
     String? location,
     bool hasAttachments = false,
+    List<dynamic>? images, // For ML classification
   }) async {
     // Generate new ID
     final newId = _reports.isEmpty ? 1 : _reports.map((r) => r.id).reduce((a, b) => a > b ? a : b) + 1;

@@ -3,7 +3,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import '../widgets/bottom_nav_widget.dart';
-import '../widgets/report_form_widget.dart';
 import '../styles/app_theme.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -13,34 +12,35 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateMixin {
-  int _currentIndex = 3;
+class _ProfileScreenState extends State<ProfileScreen>
+    with TickerProviderStateMixin {
+  int _currentIndex = 2;
   bool _isEditing = false;
   File? _profileImage;
   final ImagePicker _imagePicker = ImagePicker();
-  
+
   // Controllers for text fields
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
   late TextEditingController _bioController;
-  
+
   // Animation controllers
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  
+
   // Demo profile data
-  Map<String, String> _profileData = {
+  final Map<String, String> _profileData = {
     'name': 'Alex Johnson',
     'email': 'alex.johnson@civicreporter.com',
     'phone': '+1 (555) 987-6543',
     'address': '456 Oak Avenue, Downtown, CA 90210',
     'bio': 'Active citizen committed to making our community better',
   };
-  
+
   @override
   void initState() {
     super.initState();
@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
     _initializeAnimations();
     _loadProfileData();
   }
-  
+
   void _initializeControllers() {
     _nameController = TextEditingController(text: _profileData['name']);
     _emailController = TextEditingController(text: _profileData['email']);
@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
     _addressController = TextEditingController(text: _profileData['address']);
     _bioController = TextEditingController(text: _profileData['bio']);
   }
-  
+
   void _initializeAnimations() {
     _fadeController = AnimationController(
       duration: AppTheme.animationDuration,
@@ -66,18 +66,19 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
       duration: AppTheme.animationDuration,
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeController, curve: AppTheme.animationCurve),
     );
-    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
       CurvedAnimation(parent: _slideController, curve: AppTheme.animationCurve),
     );
-    
+
     _fadeController.forward();
     _slideController.forward();
   }
-  
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -89,19 +90,23 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
     _slideController.dispose();
     super.dispose();
   }
-  
+
   Future<void> _loadProfileData() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _profileData['name'] = prefs.getString('profile_name') ?? 'Alex Johnson';
-      _profileData['email'] = prefs.getString('profile_email') ?? 'alex.johnson@civicreporter.com';
-      _profileData['phone'] = prefs.getString('profile_phone') ?? '+1 (555) 987-6543';
-      _profileData['address'] = prefs.getString('profile_address') ?? '456 Oak Avenue, Downtown, CA 90210';
-      _profileData['bio'] = prefs.getString('profile_bio') ?? 'Active citizen committed to making our community better';
+      _profileData['email'] =
+          prefs.getString('profile_email') ?? 'alex.johnson@civicreporter.com';
+      _profileData['phone'] =
+          prefs.getString('profile_phone') ?? '+1 (555) 987-6543';
+      _profileData['address'] = prefs.getString('profile_address') ??
+          '456 Oak Avenue, Downtown, CA 90210';
+      _profileData['bio'] = prefs.getString('profile_bio') ??
+          'Active citizen committed to making our community better';
     });
     _initializeControllers();
   }
-  
+
   Future<void> _saveProfileData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('profile_name', _nameController.text);
@@ -109,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
     await prefs.setString('profile_phone', _phoneController.text);
     await prefs.setString('profile_address', _addressController.text);
     await prefs.setString('profile_bio', _bioController.text);
-    
+
     setState(() {
       _profileData['name'] = _nameController.text;
       _profileData['email'] = _emailController.text;
@@ -118,7 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
       _profileData['bio'] = _bioController.text;
       _isEditing = false;
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Profile updated successfully!'),
@@ -140,49 +145,11 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
         Navigator.pushNamed(context, '/reports');
         break;
       case 2:
-        // Add new report
-        _showAddReportDialog();
-        break;
-      case 3:
         // Already on profile
         break;
     }
   }
 
-  void _showAddReportDialog() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.9,
-        decoration: const BoxDecoration(
-          color: AppTheme.neutral200,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: const Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Report New Issue',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: ReportFormWidget(),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Future<void> _pickProfileImage() async {
     try {
@@ -192,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
         maxHeight: 500,
         imageQuality: 70,
       );
-      
+
       if (image != null) {
         setState(() {
           _profileImage = File(image.path);
@@ -207,7 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
       );
     }
   }
-  
+
   Widget _buildProfileHeader() {
     return Card(
       child: Padding(
@@ -219,9 +186,10 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                 CircleAvatar(
                   radius: 50,
                   backgroundColor: AppTheme.primaryLight,
-                  backgroundImage: _profileImage != null ? FileImage(_profileImage!) : null,
+                  backgroundImage:
+                      _profileImage != null ? FileImage(_profileImage!) : null,
                   child: _profileImage == null
-                      ? Icon(
+                      ? const Icon(
                           Icons.person_rounded,
                           size: 50,
                           color: AppTheme.primaryColor,
@@ -238,7 +206,8 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                       decoration: BoxDecoration(
                         color: AppTheme.accentColor,
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppTheme.neutral100, width: 2),
+                        border:
+                            Border.all(color: AppTheme.neutral100, width: 2),
                       ),
                       child: const Icon(
                         Icons.camera_alt_rounded,
@@ -254,16 +223,16 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
             Text(
               _profileData['name'] ?? 'User Name',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppTheme.neutral800,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.neutral800,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               _profileData['email'] ?? 'user@example.com',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.neutral600,
-              ),
+                    color: AppTheme.neutral600,
+                  ),
             ),
             const SizedBox(height: 12),
             Container(
@@ -275,9 +244,9 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
               child: Text(
                 _profileData['bio'] ?? 'No bio available',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppTheme.primaryColor,
-                  fontStyle: FontStyle.italic,
-                ),
+                      color: AppTheme.primaryColor,
+                      fontStyle: FontStyle.italic,
+                    ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -286,8 +255,9 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
       ),
     );
   }
-  
-  Widget _buildInfoCard(String title, String value, IconData icon, TextEditingController controller) {
+
+  Widget _buildInfoCard(String title, String value, IconData icon,
+      TextEditingController controller) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -301,9 +271,9 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                 Text(
                   title,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: AppTheme.neutral600,
-                    fontWeight: FontWeight.w600,
-                  ),
+                        color: AppTheme.neutral600,
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
               ],
             ),
@@ -314,22 +284,24 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                     style: Theme.of(context).textTheme.bodyMedium,
                     decoration: InputDecoration(
                       hintText: 'Enter $title',
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
                     ),
                   )
                 : Text(
                     value,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.neutral800,
-                    ),
+                          color: AppTheme.neutral800,
+                        ),
                   ),
           ],
         ),
       ),
     );
   }
-  
-  Widget _buildBioCard(String title, String value, IconData icon, TextEditingController controller) {
+
+  Widget _buildBioCard(String title, String value, IconData icon,
+      TextEditingController controller) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -343,9 +315,9 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                 Text(
                   title,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: AppTheme.neutral600,
-                    fontWeight: FontWeight.w600,
-                  ),
+                        color: AppTheme.neutral600,
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
               ],
             ),
@@ -355,17 +327,21 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                     controller: controller,
                     maxLines: 3,
                     style: Theme.of(context).textTheme.bodyMedium,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Tell us about yourself',
-                      contentPadding: const EdgeInsets.all(12),
+                      contentPadding: EdgeInsets.all(12),
                     ),
                   )
                 : Text(
                     value.isNotEmpty ? value : 'No bio available',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: value.isNotEmpty ? AppTheme.neutral800 : AppTheme.neutral500,
-                      fontStyle: value.isEmpty ? FontStyle.italic : FontStyle.normal,
-                    ),
+                          color: value.isNotEmpty
+                              ? AppTheme.neutral800
+                              : AppTheme.neutral500,
+                          fontStyle: value.isEmpty
+                              ? FontStyle.italic
+                              : FontStyle.normal,
+                        ),
                   ),
           ],
         ),
@@ -375,10 +351,21 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.neutral200,
-      appBar: AppBar(
-        title: const Text('My Profile'),
+    return Container(
+      decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: AppTheme.primaryGradient,
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: const Text('My Profile'),
         actions: [
           if (!_isEditing)
             IconButton(
@@ -409,7 +396,9 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                 ),
               ],
             ),
-        ],
+            ],
+          ),
+        ),
       ),
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -421,15 +410,20 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
               children: [
                 _buildProfileHeader(),
                 const SizedBox(height: 16),
-                _buildInfoCard('Full Name', _profileData['name']!, Icons.person_rounded, _nameController),
+                _buildInfoCard('Full Name', _profileData['name']!,
+                    Icons.person_rounded, _nameController),
                 const SizedBox(height: 12),
-                _buildInfoCard('Email Address', _profileData['email']!, Icons.email_rounded, _emailController),
+                _buildInfoCard('Email Address', _profileData['email']!,
+                    Icons.email_rounded, _emailController),
                 const SizedBox(height: 12),
-                _buildInfoCard('Phone Number', _profileData['phone']!, Icons.phone_rounded, _phoneController),
+                _buildInfoCard('Phone Number', _profileData['phone']!,
+                    Icons.phone_rounded, _phoneController),
                 const SizedBox(height: 12),
-                _buildInfoCard('Address', _profileData['address']!, Icons.location_on_rounded, _addressController),
+                _buildInfoCard('Address', _profileData['address']!,
+                    Icons.location_on_rounded, _addressController),
                 const SizedBox(height: 12),
-                _buildBioCard('Bio', _profileData['bio']!, Icons.info_rounded, _bioController),
+                _buildBioCard('Bio', _profileData['bio']!, Icons.info_rounded,
+                    _bioController),
                 const SizedBox(height: 32),
                 if (_isEditing)
                   Row(
@@ -474,13 +468,14 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                   _isEditing = true;
                 });
               },
-              child: const Icon(Icons.edit_rounded),
               heroTag: 'profile_edit_fab',
+              child: const Icon(Icons.edit_rounded),
             )
           : null,
       bottomNavigationBar: BottomNavWidget(
         currentIndex: _currentIndex,
         onTap: _onBottomNavTap,
+      ),
       ),
     );
   }

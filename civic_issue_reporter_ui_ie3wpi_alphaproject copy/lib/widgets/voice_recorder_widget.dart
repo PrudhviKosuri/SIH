@@ -7,7 +7,7 @@ import '../styles/app_theme.dart';
 
 class VoiceRecorderWidget extends StatefulWidget {
   final Function(String audioPath, Duration duration) onRecordingComplete;
-  
+
   const VoiceRecorderWidget({
     super.key,
     required this.onRecordingComplete,
@@ -24,11 +24,11 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
   Duration _recordingDuration = Duration.zero;
   Timer? _recordingTimer;
   String? _audioPath;
-  
+
   late AnimationController _pulseController;
   late AnimationController _waveController;
   late Animation<double> _pulseAnimation;
-  
+
   final List<double> _waveAmplitudes = List.generate(20, (index) => 0.0);
 
   @override
@@ -47,11 +47,11 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
       duration: const Duration(milliseconds: 100),
       vsync: this,
     );
-    
+
     _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
-    
+
     _pulseController.repeat(reverse: true);
   }
 
@@ -75,7 +75,8 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Microphone permission is required for voice recording'),
+            content:
+                Text('Microphone permission is required for voice recording'),
             backgroundColor: AppTheme.warningColor,
           ),
         );
@@ -85,25 +86,25 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
 
     try {
       final directory = Directory.systemTemp;
-      _audioPath = '${directory.path}/voice_note_${DateTime.now().millisecondsSinceEpoch}.aac';
-      
+      _audioPath =
+          '${directory.path}/voice_note_${DateTime.now().millisecondsSinceEpoch}.aac';
+
       await _recorder!.startRecorder(
         toFile: _audioPath,
         codec: Codec.aacADTS,
       );
-      
+
       setState(() {
         _isRecording = true;
         _recordingDuration = Duration.zero;
       });
-      
+
       _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
         setState(() {
           _recordingDuration = Duration(seconds: timer.tick);
         });
         _updateWaveAmplitudes();
       });
-      
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -129,16 +130,15 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
     try {
       await _recorder!.stopRecorder();
       _recordingTimer?.cancel();
-      
+
       setState(() {
         _isRecording = false;
       });
-      
+
       if (_audioPath != null) {
         Navigator.pop(context);
         widget.onRecordingComplete(_audioPath!, _recordingDuration);
       }
-      
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -155,7 +155,7 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
     if (_isRecording) {
       _recorder!.stopRecorder();
       _recordingTimer?.cancel();
-      
+
       if (_audioPath != null) {
         File(_audioPath!).delete();
       }
@@ -177,9 +177,9 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
             height: _isRecording ? 20 + (amplitude * 40) : 20,
             margin: const EdgeInsets.symmetric(horizontal: 1),
             decoration: BoxDecoration(
-              color: _isRecording 
-                ? AppTheme.accentColor.withOpacity(0.7 + amplitude * 0.3)
-                : AppTheme.neutral400,
+              color: _isRecording
+                  ? AppTheme.accentColor.withOpacity(0.7 + amplitude * 0.3)
+                  : AppTheme.neutral400,
               borderRadius: BorderRadius.circular(1.5),
             ),
           );
@@ -201,10 +201,13 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _isRecording ? AppTheme.errorColor : AppTheme.accentColor,
+                color:
+                    _isRecording ? AppTheme.errorColor : AppTheme.accentColor,
                 boxShadow: [
                   BoxShadow(
-                    color: (_isRecording ? AppTheme.errorColor : AppTheme.accentColor)
+                    color: (_isRecording
+                            ? AppTheme.errorColor
+                            : AppTheme.accentColor)
                         .withOpacity(0.3),
                     blurRadius: 20,
                     spreadRadius: 5,
@@ -233,9 +236,9 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppTheme.neutral100,
-        borderRadius: const BorderRadius.only(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
@@ -261,18 +264,22 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
                       children: [
                         Text(
                           _isRecording ? 'Recording...' : 'Voice Recording',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.neutral800,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.neutral800,
+                              ),
                         ),
                         if (_isRecording)
                           Text(
                             _formatDuration(_recordingDuration),
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: AppTheme.accentColor,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      color: AppTheme.accentColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                           ),
                       ],
                     ),
@@ -281,31 +288,31 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
                 ],
               ),
             ),
-            
+
             // Wave form visualization
             _buildWaveForm(),
-            
+
             const SizedBox(height: 40),
-            
+
             // Record button
             _buildRecordButton(),
-            
+
             const SizedBox(height: 30),
-            
+
             // Instructions
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Text(
-                _isRecording 
+                _isRecording
                     ? 'Tap to stop recording'
                     : 'Tap to start recording your voice message',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.neutral600,
-                ),
+                      color: AppTheme.neutral600,
+                    ),
                 textAlign: TextAlign.center,
               ),
             ),
-            
+
             const SizedBox(height: 40),
           ],
         ),

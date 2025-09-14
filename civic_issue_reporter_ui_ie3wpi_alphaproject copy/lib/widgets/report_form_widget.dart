@@ -20,99 +20,72 @@ class ReportFormWidget extends StatefulWidget {
 class _ReportFormWidgetState extends State<ReportFormWidget> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-  String _selectedCategory = '';
   List<File> _selectedImages = [];
   final LocationService _locationService = LocationService();
   bool _isGettingLocation = false;
   Map<String, dynamic>? _locationData;
-  
+
   // Voice recording properties
   String? _audioPath;
   Duration _recordingDuration = Duration.zero;
-  
+
   // Video properties
   File? _selectedVideo;
-
-  final List<String> _categories = [
-    'Streetlight Issue',
-    'Road Damage',
-    'Water Leakage',
-    'Sewer Clogging',
-    'Power Outage',
-    'Waste Management',
-    'Others',
-  ];
 
   @override
   void initState() {
     super.initState();
   }
-  
+
   @override
   void dispose() {
     _descriptionController.dispose();
     _locationController.dispose();
     super.dispose();
   }
-  
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        gradient: AppTheme.cardGradient,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'REPORT YOUR ISSUE',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.neutral600,
-                letterSpacing: 1.2,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                gradient: AppTheme.primaryGradient,
+                borderRadius: BorderRadius.circular(12),
               ),
-            ),
-            const SizedBox(height: 12),
-
-            // Category Dropdown
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Category',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: AppTheme.neutral700,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                DropdownButtonFormField<String>(
-                  initialValue: _selectedCategory.isEmpty ? null : _selectedCategory,
-                  decoration: const InputDecoration(
-                    hintText: 'Select category...',
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 12,
+              child: const Row(
+                children: [
+                  Icon(Icons.report_problem_rounded, color: Colors.white, size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    'REPORT YOUR ISSUE',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1.2,
                     ),
                   ),
-                  items: _categories.map((category) {
-                    return DropdownMenuItem(
-                      value: category,
-                      child: Text(category),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedCategory = value ?? '';
-                    });
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
-
-            const SizedBox(height: 12),
+            const SizedBox(height: 20),
 
             // Location Input
             Column(
@@ -144,7 +117,8 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
                     ),
                     const SizedBox(width: 8),
                     IconButton(
-                      onPressed: _isGettingLocation ? null : _getCurrentLocation,
+                      onPressed:
+                          _isGettingLocation ? null : _getCurrentLocation,
                       icon: _isGettingLocation
                           ? const SizedBox(
                               width: 16,
@@ -324,20 +298,21 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
                     ),
                   ),
                 ],
-                
+
                 // Audio attachment indicator
                 if (_audioPath != null) ...[
                   const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppTheme.accentColor.withOpacity(0.1),
+                  color: AppTheme.accentColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppTheme.accentColor.withOpacity(0.3)),
+                      border: Border.all(
+                          color: AppTheme.accentColor.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.audiotrack_rounded,
                           color: AppTheme.accentColor,
                           size: 20,
@@ -349,16 +324,22 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
                             children: [
                               Text(
                                 'Voice Recording',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppTheme.accentColor,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppTheme.accentColor,
+                                    ),
                               ),
                               Text(
                                 'Duration: ${_recordingDuration.inMinutes}:${(_recordingDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: AppTheme.neutral600,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: AppTheme.neutral600,
+                                    ),
                               ),
                             ],
                           ),
@@ -382,7 +363,7 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
                     ),
                   ),
                 ],
-                
+
                 // Video attachment indicator
                 if (_selectedVideo != null) ...[
                   const SizedBox(height: 12),
@@ -391,11 +372,12 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
                     decoration: BoxDecoration(
                       color: AppTheme.secondaryColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppTheme.secondaryColor.withOpacity(0.3)),
+                      border: Border.all(
+                          color: AppTheme.secondaryColor.withOpacity(0.3)),
                     ),
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.videocam_rounded,
                           color: AppTheme.secondaryColor,
                           size: 20,
@@ -407,28 +389,38 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
                             children: [
                               Text(
                                 'Video Attachment',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppTheme.secondaryColor,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppTheme.secondaryColor,
+                                    ),
                               ),
                               FutureBuilder<int>(
                                 future: _selectedVideo!.length(),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
-                                    final sizeInMB = snapshot.data! / (1024 * 1024);
+                                    final sizeInMB =
+                                        snapshot.data! / (1024 * 1024);
                                     return Text(
                                       'Size: ${sizeInMB.toStringAsFixed(1)} MB',
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: AppTheme.neutral600,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: AppTheme.neutral600,
+                                          ),
                                     );
                                   }
                                   return Text(
                                     'Loading...',
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: AppTheme.neutral600,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: AppTheme.neutral600,
+                                        ),
                                   );
                                 },
                               ),
@@ -466,7 +458,8 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
                         onPressed: _takePhotoFromCamera,
                         icon: const Icon(Icons.camera_alt_rounded),
                         style: IconButton.styleFrom(
-                          backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+                          backgroundColor:
+                              AppTheme.primaryColor.withOpacity(0.1),
                           foregroundColor: AppTheme.primaryColor,
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(12),
@@ -478,7 +471,8 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
                         onPressed: _pickVideo,
                         icon: const Icon(Icons.videocam_rounded),
                         style: IconButton.styleFrom(
-                          backgroundColor: AppTheme.secondaryColor.withOpacity(0.1),
+                          backgroundColor:
+                              AppTheme.secondaryColor.withOpacity(0.1),
                           foregroundColor: AppTheme.secondaryColor,
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(12),
@@ -490,7 +484,8 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
                         onPressed: _handleVoiceRecording,
                         icon: const Icon(Icons.mic_rounded),
                         style: IconButton.styleFrom(
-                          backgroundColor: AppTheme.accentColor.withOpacity(0.1),
+                          backgroundColor:
+                              AppTheme.accentColor.withOpacity(0.1),
                           foregroundColor: AppTheme.accentColor,
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(12),
@@ -500,18 +495,32 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
                     ],
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: _canSubmit() ? _submitReport : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.accentColor,
-                    foregroundColor: AppTheme.neutral100,
-                    disabledBackgroundColor: AppTheme.neutral400,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: _canSubmit() ? AppTheme.accentGradient : null,
+                    color: _canSubmit() ? null : AppTheme.neutral400,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: _canSubmit() ? [
+                      BoxShadow(
+                        color: AppTheme.accentColor.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ] : null,
                   ),
-                  child: const Text('Submit'),
+                  child: ElevatedButton(
+                    onPressed: _canSubmit() ? _submitReport : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      shadowColor: Colors.transparent,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 14,
+                      ),
+                    ),
+                    child: const Text('Submit Report', style: TextStyle(fontWeight: FontWeight.w600)),
+                  ),
                 ),
               ],
             ),
@@ -522,8 +531,7 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
   }
 
   bool _canSubmit() {
-    return _descriptionController.text.trim().isNotEmpty &&
-        _selectedCategory.isNotEmpty;
+    return _descriptionController.text.trim().isNotEmpty;
   }
 
   Future<void> _pickImages() async {
@@ -554,7 +562,7 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
             _audioPath = audioPath;
             _recordingDuration = duration;
           });
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Voice recording attached!'),
@@ -565,8 +573,7 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
       ),
     );
   }
-  
-  
+
   Future<void> _pickVideo() async {
     showModalBottomSheet(
       context: context,
@@ -595,7 +602,7 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
         setState(() {
           _selectedImages.add(File(imagePath));
         });
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Photo added successfully!'),
@@ -616,114 +623,6 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
     }
   }
 
-  Future<bool> _showImagePreviewDialog(File imageFile) async {
-    return await showDialog<bool>(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.8,
-            maxWidth: MediaQuery.of(context).size.width * 0.9,
-          ),
-          decoration: BoxDecoration(
-            color: AppTheme.neutral100,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryColor,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.preview_rounded,
-                      color: AppTheme.neutral100,
-                      size: 24,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Photo Preview',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: AppTheme.neutral100,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Image preview
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(
-                      imageFile,
-                      fit: BoxFit.contain,
-                      width: double.infinity,
-                    ),
-                  ),
-                ),
-              ),
-              // Action buttons
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          side: const BorderSide(color: AppTheme.neutral400),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.close_rounded, size: 18),
-                            const SizedBox(width: 8),
-                            const Text('Retake'),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.check_rounded, size: 18),
-                            const SizedBox(width: 8),
-                            const Text('Use Photo'),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ) ?? false;
-  }
-
   Future<void> _getCurrentLocation() async {
     setState(() {
       _isGettingLocation = true;
@@ -731,14 +630,14 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
 
     try {
       _locationData = await _locationService.getLocationDataForBackend();
-      
+
       if (_locationData != null) {
         setState(() {
-          _locationController.text = _locationData!['address'] ?? 
+          _locationController.text = _locationData!['address'] ??
               'Lat: ${_locationData!['latitude']?.toStringAsFixed(6)}, '
-              'Lng: ${_locationData!['longitude']?.toStringAsFixed(6)}';
+                  'Lng: ${_locationData!['longitude']?.toStringAsFixed(6)}';
         });
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -751,7 +650,8 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Unable to get current location. Please enter manually.'),
+              content: Text(
+                  'Unable to get current location. Please enter manually.'),
               backgroundColor: AppTheme.warningColor,
             ),
           );
@@ -797,14 +697,24 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
           ),
         );
 
-        // Submit report using provider
-        final reportsProvider = Provider.of<ReportsProvider>(context, listen: false);
+        // Submit report using provider with auto-classification
+        final reportsProvider =
+            Provider.of<ReportsProvider>(context, listen: false);
+        
+        // Auto-detect category based on image and text (placeholder for ML integration)
+        String detectedCategory = 'General Issue'; // This will be replaced by ML classification
+        
         await reportsProvider.submitNewReport(
-          title: '$_selectedCategory Issue',
-          category: _selectedCategory,
+          title: detectedCategory,
+          category: detectedCategory,
           description: _descriptionController.text.trim(),
-          location: _locationController.text.isNotEmpty ? _locationController.text.trim() : null,
-          hasAttachments: _selectedImages.isNotEmpty || _audioPath != null || _selectedVideo != null,
+          location: _locationController.text.isNotEmpty
+              ? _locationController.text.trim()
+              : null,
+          hasAttachments: _selectedImages.isNotEmpty ||
+              _audioPath != null ||
+              _selectedVideo != null,
+          images: _selectedImages, // Pass images for ML classification
         );
 
         // Send location data to backend if available
@@ -816,17 +726,18 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
         if (mounted) {
           Navigator.of(context).pop();
         }
-        
+
         // Show success dialog
         if (mounted) {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: Row(
+              title: const Row(
                 children: [
-                  Icon(Icons.check_circle_rounded, color: AppTheme.successColor),
-                  const SizedBox(width: 8),
-                  const Text('Success!'),
+                  Icon(Icons.check_circle_rounded,
+                      color: AppTheme.successColor),
+                  SizedBox(width: 8),
+                  Text('Success!'),
                 ],
               ),
               content: const Text(
@@ -838,7 +749,12 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
                     Navigator.of(context).pop(); // Close dialog
                     Navigator.of(context).pop(); // Close bottom sheet
                     _clearForm();
+                    // Navigate to reports to see the new report
+                    Navigator.pushNamed(context, '/reports');
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                  ),
                   child: const Text('View Reports'),
                 ),
               ],
@@ -849,7 +765,7 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
         // Close loading dialog if it's open
         if (mounted) {
           Navigator.of(context).pop();
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Error submitting report: ${e.toString()}'),
@@ -865,10 +781,12 @@ class _ReportFormWidgetState extends State<ReportFormWidget> {
     setState(() {
       _descriptionController.clear();
       _locationController.clear();
-      _selectedCategory = '';
       _selectedImages.clear();
       _locationData = null;
       _isGettingLocation = false;
+      _audioPath = null;
+      _selectedVideo = null;
+      _recordingDuration = Duration.zero;
     });
     _locationService.clearLocationData();
   }

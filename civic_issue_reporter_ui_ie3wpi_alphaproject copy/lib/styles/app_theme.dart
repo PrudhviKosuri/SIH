@@ -129,9 +129,10 @@ class AppTheme {
           backgroundColor: accentColor,
           foregroundColor: neutral100,
           elevation: 3,
-          shadowColor: accentColor.withOpacity(0.3),
+          shadowColor: accentColor.withValues(alpha: 0.3),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           textStyle: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 14,
@@ -155,7 +156,7 @@ class AppTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: neutral300, width: 1),
+          borderSide: const BorderSide(color: neutral300, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -180,13 +181,13 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: neutral100,
         elevation: 2,
-        shadowColor: Colors.black.withOpacity(0.1),
+        shadowColor: Colors.black.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 0),
       ),
-      drawerTheme: DrawerThemeData(
+      drawerTheme: const DrawerThemeData(
         backgroundColor: neutral100,
-        shape: const RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.horizontal(
             right: Radius.circular(16),
           ),
@@ -222,4 +223,37 @@ class AppTheme {
   static const Curve animationCurve = Curves.easeInOut;
   static const Curve fastAnimationCurve = Curves.easeOut;
   static const Curve slowAnimationCurve = Curves.easeInOutCubic;
+
+  // Modern gradient definitions
+  static const LinearGradient primaryGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [primaryColor, primaryDark],
+  );
+
+  static const LinearGradient accentGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [accentColor, Color(0xFFFF8E8E)],
+  );
+
+  static const LinearGradient backgroundGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [neutral100, neutral200],
+  );
+
+  static const LinearGradient cardGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFFFFFFF), Color(0xFFF8FAFC)],
+  );
+
+  static const LinearGradient successGradient = LinearGradient(
+    colors: [successColor, Color(0xFF36D1DC)],
+  );
+
+  static const LinearGradient warningGradient = LinearGradient(
+    colors: [warningColor, Color(0xFFFFF8A3)],
+  );
 }

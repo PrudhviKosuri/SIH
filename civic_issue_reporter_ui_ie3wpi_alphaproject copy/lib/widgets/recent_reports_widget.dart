@@ -12,7 +12,7 @@ class RecentReportsWidget extends StatefulWidget {
   State<RecentReportsWidget> createState() => _RecentReportsWidgetState();
 }
 
-class _RecentReportsWidgetState extends State<RecentReportsWidget> 
+class _RecentReportsWidgetState extends State<RecentReportsWidget>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late List<AnimationController> _itemControllers;
@@ -29,7 +29,7 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
       duration: AppTheme.animationDuration,
       vsync: this,
     );
-    
+
     _itemControllers = [];
     _itemAnimations = [];
   }
@@ -48,16 +48,16 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
     for (final controller in _itemControllers) {
       controller.dispose();
     }
-    
+
     _itemControllers.clear();
     _itemAnimations.clear();
-    
+
     for (int i = 0; i < itemCount; i++) {
       final controller = AnimationController(
         duration: Duration(milliseconds: 300 + (i * 100)),
         vsync: this,
       );
-      
+
       final animation = Tween<double>(
         begin: 0.0,
         end: 1.0,
@@ -65,7 +65,7 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
         parent: controller,
         curve: Curves.easeOutBack,
       ));
-      
+
       _itemControllers.add(controller);
       _itemAnimations.add(animation);
     }
@@ -109,10 +109,13 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                       Expanded(
                         child: Text(
                           report.title,
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppTheme.neutral800,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.neutral800,
+                              ),
                         ),
                       ),
                       _buildStatusChip(report.status),
@@ -123,8 +126,8 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                     Text(
                       report.description!,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.neutral600,
-                      ),
+                            color: AppTheme.neutral600,
+                          ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -136,7 +139,7 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
         const SizedBox(height: 16),
         Row(
           children: [
-            Icon(
+            const Icon(
               Icons.access_time_rounded,
               size: 16,
               color: AppTheme.neutral500,
@@ -145,12 +148,12 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
             Text(
               _formatDate(report.date),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppTheme.neutral500,
-              ),
+                    color: AppTheme.neutral500,
+                  ),
             ),
             const SizedBox(width: 16),
             if (report.location != null) ...[
-              Icon(
+              const Icon(
                 Icons.location_on_rounded,
                 size: 16,
                 color: AppTheme.neutral500,
@@ -160,8 +163,8 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                 child: Text(
                   report.location!,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppTheme.neutral500,
-                  ),
+                        color: AppTheme.neutral500,
+                      ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -177,7 +180,7 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.attachment_rounded,
                       size: 12,
                       color: AppTheme.infoColor,
@@ -186,10 +189,10 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                     Text(
                       'Media',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.infoColor,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                      ),
+                            color: AppTheme.infoColor,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                   ],
                 ),
@@ -235,7 +238,7 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
   Widget _buildStatusChip(ReportStatus status) {
     Color color;
     String text;
-    
+
     switch (status) {
       case ReportStatus.sent:
         color = AppTheme.infoColor;
@@ -250,7 +253,7 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
         text = 'Resolved';
         break;
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -261,10 +264,10 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
       child: Text(
         text,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: color,
-          fontWeight: FontWeight.w600,
-          fontSize: 10,
-        ),
+              color: color,
+              fontWeight: FontWeight.w600,
+              fontSize: 10,
+            ),
       ),
     );
   }
@@ -274,7 +277,7 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
       final date = DateFormat('dd/MM/yyyy').parse(dateStr);
       final now = DateTime.now();
       final difference = now.difference(date).inDays;
-      
+
       if (difference == 0) {
         return 'Today';
       } else if (difference == 1) {
@@ -343,7 +346,8 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: _getCategoryColor(report.category).withOpacity(0.1),
+                      color:
+                          _getCategoryColor(report.category).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -359,15 +363,19 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                       children: [
                         Text(
                           report.title,
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                         Text(
                           report.category,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppTheme.neutral600,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: AppTheme.neutral600,
+                                  ),
                         ),
                       ],
                     ),
@@ -380,8 +388,8 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                 Text(
                   'Description',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -392,13 +400,14 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Icon(Icons.access_time_rounded, size: 16, color: AppTheme.neutral500),
+                  const Icon(Icons.access_time_rounded,
+                      size: 16, color: AppTheme.neutral500),
                   const SizedBox(width: 6),
                   Text(
                     'Reported on ${report.date}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppTheme.neutral500,
-                    ),
+                          color: AppTheme.neutral500,
+                        ),
                   ),
                 ],
               ),
@@ -406,14 +415,15 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.location_on_rounded, size: 16, color: AppTheme.neutral500),
+                    const Icon(Icons.location_on_rounded,
+                        size: 16, color: AppTheme.neutral500),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         report.location!,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppTheme.neutral500,
-                        ),
+                              color: AppTheme.neutral500,
+                            ),
                       ),
                     ),
                   ],
@@ -455,7 +465,7 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
       builder: (context, reportsProvider, child) {
         final reports = reportsProvider.recentReports;
         final isLoading = reportsProvider.isLoading;
-        
+
         // Initialize animations when reports change
         if (reports.isNotEmpty && _itemControllers.length != reports.length) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -463,13 +473,13 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
             _animateItems();
           });
         }
-        
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.history_rounded,
                   color: AppTheme.primaryColor,
                   size: 24,
@@ -478,9 +488,9 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                 Text(
                   'Recent Reports',
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.neutral800,
-                  ),
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.neutral800,
+                      ),
                 ),
                 const Spacer(),
                 if (!isLoading)
@@ -493,13 +503,14 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                       children: [
                         Text(
                           'View All',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppTheme.primaryColor,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: AppTheme.primaryColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                         ),
                         const SizedBox(width: 4),
-                        Icon(
+                        const Icon(
                           Icons.arrow_forward_rounded,
                           size: 16,
                           color: AppTheme.primaryColor,
@@ -521,7 +532,7 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                       color: AppTheme.neutral300.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: CircularProgressIndicator(
                         color: AppTheme.primaryColor,
                         strokeWidth: 2,
@@ -539,7 +550,7 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                 ),
                 child: Column(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.inbox_rounded,
                       size: 48,
                       color: AppTheme.neutral500,
@@ -547,17 +558,18 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
                     const SizedBox(height: 16),
                     Text(
                       'No reports yet',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: AppTheme.neutral600,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: AppTheme.neutral600,
+                                fontWeight: FontWeight.w600,
+                              ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Start by reporting your first civic issue',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.neutral500,
-                      ),
+                            color: AppTheme.neutral500,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -565,32 +577,28 @@ class _RecentReportsWidgetState extends State<RecentReportsWidget>
               )
             else
               Column(
-                children: reports
-                    .asMap()
-                    .entries
-                    .map((entry) {
-                      if (entry.key < _itemAnimations.length) {
-                        return _buildReportCard(entry.value, entry.key);
-                      } else {
-                        // Fallback for new reports without animation
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          child: Card(
-                            elevation: 2,
-                            shadowColor: Colors.black.withOpacity(0.1),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(20),
-                              onTap: () => _showReportDetails(entry.value),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: _buildReportContent(entry.value),
-                              ),
-                            ),
+                children: reports.asMap().entries.map((entry) {
+                  if (entry.key < _itemAnimations.length) {
+                    return _buildReportCard(entry.value, entry.key);
+                  } else {
+                    // Fallback for new reports without animation
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      child: Card(
+                        elevation: 2,
+                        shadowColor: Colors.black.withOpacity(0.1),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: () => _showReportDetails(entry.value),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: _buildReportContent(entry.value),
                           ),
-                        );
-                      }
-                    })
-                    .toList(),
+                        ),
+                      ),
+                    );
+                  }
+                }).toList(),
               ),
           ],
         );

@@ -11,7 +11,8 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> with TickerProviderStateMixin {
+class _DashboardScreenState extends State<DashboardScreen>
+    with TickerProviderStateMixin {
   int _currentIndex = 0;
   late AnimationController _fabAnimationController;
   late Animation<double> _fabAnimation;
@@ -49,10 +50,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         Navigator.pushNamed(context, '/reports');
         break;
       case 2:
-        // Add new report - handled by FAB now
-        _showAddReportDialog();
-        break;
-      case 3:
         Navigator.pushNamed(context, '/profile');
         break;
     }
@@ -99,7 +96,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         children: [
           Container(
             height: 200,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -113,7 +110,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 30,
                       backgroundColor: AppTheme.neutral100,
                       child: Icon(
@@ -125,18 +122,19 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                     const SizedBox(height: 16),
                     Text(
                       'CIVIC ISSUE',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: AppTheme.neutral100,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.2,
-                      ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                color: AppTheme.neutral100,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
                     ),
                     Text(
                       'REPORT SYSTEM',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.neutral100.withOpacity(0.8),
-                        letterSpacing: 1.5,
-                      ),
+                            color: AppTheme.neutral100.withOpacity(0.8),
+                            letterSpacing: 1.5,
+                          ),
                     ),
                   ],
                 ),
@@ -219,9 +217,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
       title: Text(
         title,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: isDestructive ? AppTheme.errorColor : AppTheme.neutral700,
-          fontWeight: FontWeight.w500,
-        ),
+              color: isDestructive ? AppTheme.errorColor : AppTheme.neutral700,
+              fontWeight: FontWeight.w500,
+            ),
       ),
       onTap: onTap,
       shape: RoundedRectangleBorder(
@@ -235,11 +233,11 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Row(
+        title: const Row(
           children: [
             Icon(Icons.help_outline_rounded, color: AppTheme.infoColor),
-            const SizedBox(width: 8),
-            const Text('Help & Support'),
+            SizedBox(width: 8),
+            Text('Help & Support'),
           ],
         ),
         content: const Column(
@@ -248,7 +246,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           children: [
             Text('How to report an issue:'),
             SizedBox(height: 8),
-            Text('1. Select issue category\n2. Add location details\n3. Write description\n4. Add photos/videos\n5. Submit report'),
+            Text(
+                '1. Select issue category\n2. Add location details\n3. Write description\n4. Add photos/videos\n5. Submit report'),
             SizedBox(height: 16),
             Text('For technical support, contact: support@civicreporter.com'),
           ],
@@ -267,14 +266,15 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Row(
+        title: const Row(
           children: [
             Icon(Icons.settings_rounded, color: AppTheme.primaryColor),
-            const SizedBox(width: 8),
-            const Text('Settings'),
+            SizedBox(width: 8),
+            Text('Settings'),
           ],
         ),
-        content: const Text('Settings panel will be available in future updates.'),
+        content:
+            const Text('Settings panel will be available in future updates.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -289,11 +289,11 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Row(
+        title: const Row(
           children: [
             Icon(Icons.logout_rounded, color: AppTheme.errorColor),
-            const SizedBox(width: 8),
-            const Text('Logout'),
+            SizedBox(width: 8),
+            Text('Logout'),
           ],
         ),
         content: const Text('Are you sure you want to logout?'),
@@ -319,28 +319,39 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.neutral200,
-      appBar: AppBar(
-        title: Column(
-          children: [
-            Text(
-              'CIVIC ISSUE',
-              style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
-                fontSize: 16,
-                letterSpacing: 1.2,
-              ),
+    return Container(
+      decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: AppTheme.primaryGradient,
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: Column(
+              children: [
+                Text(
+                  'CIVIC ISSUE',
+                  style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
+                        fontSize: 16,
+                        letterSpacing: 1.2,
+                      ),
+                ),
+                Text(
+                  'REPORT SYSTEM',
+                  style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w300,
+                        letterSpacing: 1.5,
+                      ),
+                ),
+              ],
             ),
-            Text(
-              'REPORT SYSTEM',
-              style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
-                fontSize: 10,
-                fontWeight: FontWeight.w300,
-                letterSpacing: 1.5,
-              ),
-            ),
-          ],
-        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_rounded),
@@ -353,8 +364,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               );
             },
           ),
-        ],
-        elevation: 0,
+            ],
+          ),
+        ),
       ),
       drawer: _buildDrawer(),
       body: const SingleChildScrollView(
@@ -368,18 +380,33 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
       ),
       floatingActionButton: ScaleTransition(
         scale: _fabAnimation,
-        child: FloatingActionButton.extended(
-          onPressed: _showAddReportDialog,
-          icon: const Icon(Icons.add_rounded),
-          label: const Text('Report Issue'),
-          elevation: 6,
-          heroTag: 'main_fab',
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: AppTheme.accentGradient,
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.accentColor.withValues(alpha: 0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: FloatingActionButton.extended(
+            onPressed: _showAddReportDialog,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            icon: const Icon(Icons.add_rounded, color: Colors.white),
+            label: const Text('Report Issue', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+            heroTag: 'main_fab',
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: BottomNavWidget(
         currentIndex: _currentIndex,
         onTap: _onBottomNavTap,
+      ),
       ),
     );
   }

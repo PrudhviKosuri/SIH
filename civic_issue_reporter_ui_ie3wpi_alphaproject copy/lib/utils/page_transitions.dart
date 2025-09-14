@@ -11,12 +11,11 @@ class SlidePageRoute<T> extends PageRouteBuilder<T> {
     this.beginOffset = const Offset(1.0, 0.0),
     this.endOffset = Offset.zero,
     this.duration = const Duration(milliseconds: 300),
-    RouteSettings? settings,
+    super.settings,
   }) : super(
           pageBuilder: (context, animation, secondaryAnimation) => page,
           transitionDuration: duration,
           reverseTransitionDuration: duration,
-          settings: settings,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             var slideAnimation = Tween<Offset>(
               begin: beginOffset,
@@ -52,12 +51,11 @@ class ScalePageRoute<T> extends PageRouteBuilder<T> {
   ScalePageRoute({
     required this.page,
     this.duration = const Duration(milliseconds: 400),
-    RouteSettings? settings,
+    super.settings,
   }) : super(
           pageBuilder: (context, animation, secondaryAnimation) => page,
           transitionDuration: duration,
           reverseTransitionDuration: duration,
-          settings: settings,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             var scaleAnimation = Tween<double>(
               begin: 0.8,
@@ -93,12 +91,11 @@ class FadePageRoute<T> extends PageRouteBuilder<T> {
   FadePageRoute({
     required this.page,
     this.duration = const Duration(milliseconds: 300),
-    RouteSettings? settings,
+    super.settings,
   }) : super(
           pageBuilder: (context, animation, secondaryAnimation) => page,
           transitionDuration: duration,
           reverseTransitionDuration: duration,
-          settings: settings,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
               opacity: animation,

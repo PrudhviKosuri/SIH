@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../models/report.dart';
 import '../widgets/report_item_widget.dart';
 import '../widgets/bottom_nav_widget.dart';
-import '../widgets/report_form_widget.dart';
 import '../styles/app_theme.dart';
 import '../providers/reports_provider.dart';
 
@@ -65,49 +64,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
         // Already on reports
         break;
       case 2:
-        // Add new report
-        _showAddReportDialog();
-        break;
-      case 3:
         Navigator.pushNamed(context, '/profile');
         break;
     }
   }
 
-  void _showAddReportDialog() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.9,
-        decoration: const BoxDecoration(
-          color: AppTheme.neutral200,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: const Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Report New Issue',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: ReportFormWidget(),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -11,7 +11,8 @@ class CameraScreen extends StatefulWidget {
   State<CameraScreen> createState() => _CameraScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver {
+class _CameraScreenState extends State<CameraScreen>
+    with WidgetsBindingObserver {
   CameraController? _controller;
   List<CameraDescription> _cameras = [];
   bool _isCameraInitialized = false;
@@ -256,7 +257,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
                         width: 4,
                       ),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.camera_alt_rounded,
                       color: AppTheme.primaryColor,
                       size: 32,
@@ -315,7 +316,8 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
                     margin: const EdgeInsets.only(right: 12),
                     child: ElevatedButton.icon(
                       onPressed: _retakePhoto,
-                      icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+                      icon: const Icon(Icons.refresh_rounded,
+                          color: Colors.white),
                       label: const Text(
                         'Retake',
                         style: TextStyle(
@@ -340,7 +342,8 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
                     margin: const EdgeInsets.only(left: 12),
                     child: ElevatedButton.icon(
                       onPressed: _confirmPhoto,
-                      icon: const Icon(Icons.check_rounded, color: Colors.white),
+                      icon:
+                          const Icon(Icons.check_rounded, color: Colors.white),
                       label: const Text(
                         'Use Photo',
                         style: TextStyle(
@@ -394,16 +397,12 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
       body: Stack(
         children: [
           // Camera preview or photo preview
-          if (_showPreview)
-            _buildPhotoPreview()
-          else
-            _buildCameraPreview(),
-          
+          if (_showPreview) _buildPhotoPreview() else _buildCameraPreview(),
+
           // Controls overlay
           Positioned.fill(
-            child: _showPreview 
-                ? _buildPreviewControls() 
-                : _buildCameraControls(),
+            child:
+                _showPreview ? _buildPreviewControls() : _buildCameraControls(),
           ),
         ],
       ),
